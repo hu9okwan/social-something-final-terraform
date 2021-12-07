@@ -87,3 +87,28 @@ module "my_rds" {
     rds_password        = var.rds_password
 
 }
+
+// ec2 instance to initialize database and user
+resource "aws_instance" "rds_setup_ec2" {
+    instance_type          = "t2.micro"
+    ami                    = module.my_auto_scaling.social_something_ami
+    vpc_security_group_ids = [module.my_vpc.private_sg_id_1]
+    subnet_id              = module.my_vpc.private_subnet_id_1
+
+    user_data = base64encode(templatefile("./setuprds.yml", {
+        rds_address :  module.my_rds.rds_address
+        sql_user :     var.sql_user
+        sql_password : var.sql_password
+        sql_database : var.sql_database
+        rds_user :     var.rds_user
+        rds_password : var.rds_password
+    }))
+
+    tags = {
+        Name = "rds setup"
+    }
+
+    depends_on = [
+        module.my_rds
+    ]
+}
