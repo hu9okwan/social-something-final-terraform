@@ -38,5 +38,20 @@ module "my_vpc" {
 }
 
 
+// Auto scaling group ---------------------------------------------------------
+module "my_auto_scaling" {
+    source = "./modules/asg"
+
+    target_group_arns   = [module.my_lb.target_group_arn]
+    private_subnet_ids  = [module.my_vpc.private_subnet_id_1, module.my_vpc.private_subnet_id_2, module.my_vpc.private_subnet_id_3]
+    private_sg_id       = module.my_vpc.private_sg_id_1
+
+    bucket_name         = module.my_s3_bucket.bucket_name
+    bucket_region       = module.my_s3_bucket.bucket_region
+    rds_address         = module.my_rds.rds_address
+    sql_user            = var.sql_user
+    sql_password        = var.sql_password
+    sql_database        = var.sql_database
+}
 
 
