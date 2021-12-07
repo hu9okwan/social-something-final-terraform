@@ -55,3 +55,17 @@ module "my_auto_scaling" {
 }
 
 
+
+// Load balancer --------------------------------------------------------------
+
+module "my_lb" {
+    source = "./modules/lb"
+
+    security_groups     = module.my_vpc.public_sg_id
+    subnets             = [module.my_vpc.public_subnet_id_1, module.my_vpc.public_subnet_id_2, module.my_vpc.public_subnet_id_3]
+    vpc_id              = module.my_vpc.vpc_id
+
+    certificate_arn     = aws_acm_certificate_validation.final_certificate_validation.certificate_arn
+}
+
+
