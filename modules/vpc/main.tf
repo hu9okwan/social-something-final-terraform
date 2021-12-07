@@ -7,6 +7,107 @@ resource "aws_vpc" "some_custom_vpc" {
     }
 }
 
+// endpoint for s3
+resource "aws_vpc_endpoint" "s3" {
+    vpc_id       = aws_vpc.some_custom_vpc.id
+    service_name = "com.amazonaws.${var.region}.s3"
+    vpc_endpoint_type = "Gateway"
+    route_table_ids = [aws_vpc.some_custom_vpc.main_route_table_id]
+
+    policy = <<POLICY
+    {
+        "Statement" : [
+            {
+                "Sid" : "VisualEditor0",
+                "Effect" : "Allow",
+                "Principal": "*",
+                "Action" : [
+                    "s3:PutObject",
+                    "s3:GetObject",
+                    "s3:ListObject",
+                    "s3:DeleteObject"
+                ],
+                "Resource" : [
+                    "arn:aws:s3:::${var.bucket_name}",
+                    "arn:aws:s3:::${var.bucket_name}/*"
+                ]
+            }
+        ],
+        "Version" : "2012-10-17"
+    }
+    POLICY
+}
+
+// https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/cloudwatch-logs-and-interface-VPC.html
+resource "aws_vpc_endpoint" "logs" {
+    vpc_id            = aws_vpc.some_custom_vpc.id
+    service_name      = "com.amazonaws.${var.region}.logs"
+    vpc_endpoint_type = "Interface"
+    private_dns_enabled = true
+
+    security_group_ids = [
+        aws_security_group.public_sg.id
+    ]
+
+    subnet_ids = [
+        aws_subnet.some_private_subnet_1.id, 
+        aws_subnet.some_private_subnet_2.id, 
+        aws_subnet.some_private_subnet_3.id
+    ]
+
+    policy = <<POLICY
+    {
+        "Statement": [
+            {
+                "Sid": "PutOnly",
+                "Principal": "*",
+                "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                ],
+                "Effect": "Allow",
+                "Resource": "*"
+            }
+        ]
+    }
+    POLICY
+}
+
+resource "aws_vpc_endpoint" "monitoring" {
+    vpc_id            = aws_vpc.some_custom_vpc.id
+    service_name      = "com.amazonaws.${var.region}.monitoring"
+    vpc_endpoint_type = "Interface"
+    private_dns_enabled = true
+
+    security_group_ids = [
+        aws_security_group.public_sg.id
+    ]
+
+    subnet_ids = [
+        aws_subnet.some_private_subnet_1.id, 
+        aws_subnet.some_private_subnet_2.id, 
+        aws_subnet.some_private_subnet_3.id
+    ]
+
+    policy = <<POLICY
+    {
+        "Statement": [
+            {
+                "Sid": "PutOnly",
+                "Principal": "*",
+                "Action": [
+                    "logs:CreateLogStream",
+                    "logs:PutLogEvents"
+                ],
+                "Effect": "Allow",
+                "Resource": "*"
+            }
+        ]
+    }
+    POLICY
+}
+
+
 
 // public subnets -------------------------------------------------------------
 
@@ -207,6 +308,15 @@ resource "aws_security_group" "private_sg" {
         to_port     = 8080
         protocol    = "tcp"
         cidr_blocks = [var.vpc_cidr]
+    }
+
+    // need to enable port 443 so cloudwatch can reach instances
+    ingress {
+        from_port   = 443
+        to_port     = 443
+        protocol    = "tcp"
+        # cidr_blocks = [var.vpc_cidr] // not sure if can be restricted?
+        cidr_blocks = ["0.0.0.0/0"]
     }
 
     egress {

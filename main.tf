@@ -112,3 +112,32 @@ resource "aws_instance" "rds_setup_ec2" {
         module.my_rds
     ]
 }
+
+
+// Route 53 -------------------------------------------------------------------
+
+data "aws_route53_zone" "primary" {
+    name = "testu.xyz"
+}
+
+resource "aws_route53_record" "final" {
+    zone_id = data.aws_route53_zone.primary.zone_id
+    name    = "final.testu.xyz"
+    type    = "A"
+
+    alias {
+        name                   = module.my_lb.dns_name
+        zone_id                = module.my_lb.zone_id
+        evaluate_target_health = true
+    }
+}
+
+// certificate for sub domain to enable https
+resource "aws_acm_certificate" "final_certificate" {
+    domain_name       = "final.testu.xyz"
+    validation_method = "DNS"
+}
+
+resource "aws_acm_certificate_validation" "final_certificate_validation" {
+  certificate_arn     = aws_acm_certificate.final_certificate.arn
+}
