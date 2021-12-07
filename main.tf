@@ -69,3 +69,8 @@ module "my_lb" {
 }
 
 
+// S3 Bucket ------------------------------------------------------------------
+
+module "my_s3_bucket" {
+    source = "./modules/s3bucket"
+}
