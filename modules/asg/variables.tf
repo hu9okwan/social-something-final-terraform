@@ -3,10 +3,10 @@ variable "private_sg_id" {
     type        = string
 }
 
-# variable "private_subnet_id" {
-#     description = "ID of the private subnet"
-#     type        = string
-# }
+variable "private_subnet_ids" {
+    description = "list of ID for private subnets"
+    type        = list
+}
 
 
 variable "target_group_arns" {
@@ -14,12 +14,6 @@ variable "target_group_arns" {
     type        = list
 }
 
-
-
-variable "private_subnet_ids" {
-    description = "list of ID for private subnets"
-    type        = list
-}
 
 // variables for cloud init
 
@@ -37,11 +31,6 @@ variable "rds_address" {
   description = "The adress of rds"
   type        = string
 }
-
-# variable "database_admin_password" {
-#   description = "The password for MySQL database"
-#   type        = string
-# }
 
 variable "sql_user" {
   description = "The user name of the MySQL user"

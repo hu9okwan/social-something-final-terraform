@@ -51,11 +51,3 @@ resource "aws_lb_target_group" "app_tg" {
     vpc_id   = var.vpc_id
 }
 
-# Direct the traffic to the ec2 instance
-# resource "aws_lb_target_group_attachment" "app_attachment" {
-#   port             = 8080
-#   target_group_arn = aws_lb_target_group.app_tg.arn
-#   # The id of the ec2 instance:
-#   target_id        = var.ec2_id
-# }
-

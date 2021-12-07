@@ -8,7 +8,6 @@ resource "aws_launch_template" "app_template" {
     name_prefix   = "app_template"
     image_id      = data.aws_ami.social_something_ami.id
     instance_type = "t2.micro"
-    # subnet_id     = var.private_subnet_id
     vpc_security_group_ids = [var.private_sg_id]
     user_data     = base64encode(templatefile("${path.module}/app.yml", {
       bucket_region : var.bucket_region
@@ -24,13 +23,12 @@ resource "aws_launch_template" "app_template" {
 }
 
 resource "aws_autoscaling_group" "app_auto_scaling_group" {
-    # availability_zones = ["us-west-2a", "us-west-2b, us-west-2c"]
     vpc_zone_identifier = var.private_subnet_ids
     desired_capacity    = 2
     max_size            = 3
     min_size            = 2
 
-    target_group_arns = var.target_group_arns // grab from root from 3 lb modules
+    target_group_arns = var.target_group_arns
 
     launch_template {
         id      = aws_launch_template.app_template.id

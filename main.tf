@@ -18,7 +18,7 @@ module "my_vpc" {
     source = "./modules/vpc"
 
     region              = var.region
-    bucket_name         = module.my_s3_bucket.bucket_name
+    bucket_name         = var.bucket_name
     vpc_cidr            = "10.0.0.0/16"
 
     // lb public subnets
@@ -46,7 +46,7 @@ module "my_auto_scaling" {
     private_subnet_ids  = [module.my_vpc.private_subnet_id_1, module.my_vpc.private_subnet_id_2, module.my_vpc.private_subnet_id_3]
     private_sg_id       = module.my_vpc.private_sg_id_1
 
-    bucket_name         = module.my_s3_bucket.bucket_name
+    bucket_name         = var.bucket_name
     bucket_region       = module.my_s3_bucket.bucket_region
     rds_address         = module.my_rds.rds_address
     sql_user            = var.sql_user
@@ -72,7 +72,8 @@ module "my_lb" {
 // S3 Bucket ------------------------------------------------------------------
 
 module "my_s3_bucket" {
-    source = "./modules/s3bucket"
+    source              = "./modules/s3bucket"
+    bucket_name         = var.bucket_name
 }
 
 

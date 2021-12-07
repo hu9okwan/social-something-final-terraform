@@ -36,3 +36,9 @@ variable "sql_database" {
     type        = string
     default     = "social_something"
 }
+
+variable "bucket_name" {
+    description = "Name of the s3 bucket"
+    type        = string
+    default     = "social-something-bucket-hugo"
+}
