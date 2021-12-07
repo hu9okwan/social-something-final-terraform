@@ -74,3 +74,16 @@ module "my_lb" {
 module "my_s3_bucket" {
     source = "./modules/s3bucket"
 }
+
+
+// RDS ------------------------------------------------------------------------
+
+module "my_rds" {
+    source              = "./modules/rds"
+
+    db_sg_id            = module.my_vpc.db_sg_id
+    private_subnet_ids  = [module.my_vpc.private_subnet_id_4, module.my_vpc.private_subnet_id_5, module.my_vpc.private_subnet_id_6]
+    rds_user            = var.rds_user
+    rds_password        = var.rds_password
+
+}
