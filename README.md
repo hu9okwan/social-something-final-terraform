@@ -1,15 +1,29 @@
 ﻿# Social Something Terraform Build 🤗
+ Creates a fully scalable web application of [Sam's Social Something App](https://github.com/sam-meech-ward-bcit/social_something_full). 
  
- ⚠️ **IMPORTANT:** Setup [Social Something Packer](https://github.com/hu9okwan/social-something-final-packer) before continuing. ⚠️
+ Uses the following resources from AWS:
+ - Application Load Balancer
+ - Auto Scaling Group
+   - EC2 Instances
+ - Cloud Watch
+ - RDS
+ - Route 53
+   - Certificates
+ - S3 Bucket
+ - VPC 
+
  
- <div align="center">
+ The following image shows the infrastructure configuration:
+ <div>
   <a href="https://github.com/github_username/repo_name">
-    <img src="/configuration.png" alt="Configuration">
+    <img src="/configuration.png" alt="Configuration" height="70%" width="70%">
   </a>
  </div>
  
+
+ 
  ## Requirements
- - [Packer Build](https://github.com/hu9okwan/social-something-final-packer)
+   ⚠️ **IMPORTANT:** Setup [Social Something Packer](https://github.com/hu9okwan/social-something-final-packer) before continuing. ⚠️
  - [Terraform](https://www.terraform.io/downloads.html)
  - [AWS CLI](https://aws.amazon.com/cli/)
 
