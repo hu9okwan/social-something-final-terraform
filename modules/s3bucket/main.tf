@@ -1,6 +1,5 @@
 resource "aws_s3_bucket" "image_bucket" {
-    # bucket        = "${var.bucket_name}" // custom name
-    bucket        = "social-something-bucket-hugo" // add hugo for globally unique name
+    bucket        = "${var.bucket_name}"
     force_destroy = true
 }
 
